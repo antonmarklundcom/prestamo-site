@@ -1,0 +1,6 @@
+config.php
+config.local.php
+storage/
+*.log
+error_log
+vendercrm-*

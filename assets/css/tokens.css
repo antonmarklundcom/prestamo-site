@@ -1,0 +1,19 @@
+/* assets/css/tokens.css — generated from sites/prestamo/site.config.mjs theme.
+   Do not edit by hand; change the theme in the site config and rebuild. */
+:root {
+  --primary: #0F3D2E;
+  --primary-deep: color-mix(in srgb, #0F3D2E 82%, #000000);
+  --primary-tint: color-mix(in srgb, #0F3D2E 10%, #ffffff);
+  --accent: #E0A106;
+  --accent-deep: color-mix(in srgb, #E0A106 78%, #000000);
+  --accent-tint: color-mix(in srgb, #E0A106 12%, #ffffff);
+  --base: #F7F6F1;
+  --surface: #FFFFFF;
+  --ink: #1B1F24;
+  --ink-muted: color-mix(in srgb, #1B1F24 62%, #F7F6F1);
+  --hairline: color-mix(in srgb, #1B1F24 12%, #F7F6F1);
+  --hairline-strong: color-mix(in srgb, #1B1F24 26%, #F7F6F1);
+  --on-dark: #F7F6F1;
+  --on-dark-muted: color-mix(in srgb, #F7F6F1 74%, #1B1F24);
+  --hairline-dark: color-mix(in srgb, #F7F6F1 18%, transparent);
+}

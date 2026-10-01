@@ -1,0 +1,71 @@
+# prestamo.com.py — hardening and canonical host.
+# Output-only packaging is the primary protection; these rules are defence in depth.
+
+ErrorDocument 404 /404.html
+
+Options -Indexes
+DirectoryIndex index.html index.php
+
+RewriteEngine On
+
+# www -> bare domain, HTTPS.
+RewriteCond %{HTTP_HOST} ^www\.prestamo\.com\.py$ [NC]
+RewriteRule ^(.*)$ https://prestamo.com.py/$1 [L,R=301]
+
+# Never serve dotfiles or version-control / tool directories.
+RedirectMatch 404 ^/\.git(/|$)
+RedirectMatch 404 ^/\.github(/|$)
+RedirectMatch 404 ^/\.claude(/|$)
+RedirectMatch 404 ^/\.codex(/|$)
+RedirectMatch 404 ^/\.agents(/|$)
+RedirectMatch 404 ^/\.gitignore$
+RedirectMatch 404 ^/\.htaccess$
+RedirectMatch 404 ^/\.env(\..*)?$
+
+# Permanent redirects for pages that changed address (config.redirects).
+RedirectMatch 301 ^/nosotros/?$ /quienes-somos/
+RedirectMatch 301 ^/como-comparamos/?$ /metodologia/
+RedirectMatch 301 ^/privacidad/?$ /politica-de-privacidad/
+RedirectMatch 301 ^/aviso-legal/?$ /terminos/
+
+# Secrets and server-side state never reach the web: config.php (if uploaded
+# next to the site), the rate-limit storage, logs and the PHP include files.
+RedirectMatch 404 ^/config(\.example)?\.php$
+RedirectMatch 404 ^/storage(/|$)
+RedirectMatch 404 ^/_includes(/|$)
+RedirectMatch 404 ^/vendercrm-.*
+RedirectMatch 404 ^/(.*/)?error_log$
+
+# Keep hosting verification working.
+RewriteRule ^\.well-known/ - [L]
+
+# Repository sources, docs and tooling are not part of the public site.
+RedirectMatch 404 ^/engine(/|$)
+RedirectMatch 404 ^/sites(/|$)
+RedirectMatch 404 ^/deploy(/|$)
+RedirectMatch 404 ^/docs(/|$)
+RedirectMatch 404 ^/prompts(/|$)
+RedirectMatch 404 ^/research(/|$)
+RedirectMatch 404 ^/tests(/|$)
+RedirectMatch 404 ^/scripts(/|$)
+RedirectMatch 404 ^/node_modules(/|$)
+RedirectMatch 404 ^/package(-lock)?\.json$
+RedirectMatch 404 ^/.*\.(mjs|md|log|bak|sql|zip)$
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+
+  # Short revalidation for HTML; assets are content-hash versioned by the build.
+  <FilesMatch "\.html$">
+    Header set Cache-Control "public, max-age=300, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=600, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(woff2|avif|webp|jpg|png|svg)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
+</IfModule>

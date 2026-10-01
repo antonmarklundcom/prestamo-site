@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /contacto-alianzas.php
+Disallow: /_includes/
+
+Sitemap: https://prestamo.com.py/sitemap.xml
