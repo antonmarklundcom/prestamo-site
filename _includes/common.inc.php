@@ -34,6 +34,17 @@ function pm_config_paths(): array
 }
 
 /** @return array{cfg: array<string,mixed>, path: string} */
+/** Overlay only CRM fields; the capture flag, titular and storage stay unchanged. */
+function pm_apply_crm(array $cfg): array
+{
+    require_once dirname(__DIR__) . '/lib/vendercrm-config.php';
+    $crm = \VenderCRM\Config::optional(dirname(__DIR__));
+    if ($crm !== null) {
+        $cfg['vcrm_endpoint'] = $crm->endpoint();
+        $cfg['vcrm_api_key'] = $crm->apiKey();
+    }
+    return $cfg;
+}
 function pm_load_config(): array
 {
     static $loaded = null;
@@ -54,12 +65,12 @@ function pm_load_config(): array
         if (is_file($path)) {
             $loadedCfg = require $path;
             if (is_array($loadedCfg)) {
-                $loaded = ['cfg' => array_merge($defaults, $loadedCfg), 'path' => $path];
+                $loaded = ['cfg' => pm_apply_crm(array_merge($defaults, $loadedCfg)), 'path' => $path];
                 return $loaded;
             }
         }
     }
-    $loaded = ['cfg' => $defaults, 'path' => ''];
+    $loaded = ['cfg' => pm_apply_crm($defaults), 'path' => ''];
     return $loaded;
 }
 
