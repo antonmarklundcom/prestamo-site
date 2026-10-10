@@ -4,3 +4,7 @@ storage/
 *.log
 error_log
 vendercrm-*
+
+# Tracked configuration code/tests contain no credentials.
+!/lib/vendercrm-config.php
+!/tests/vendercrm-config.php
