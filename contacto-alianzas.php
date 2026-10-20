@@ -79,7 +79,8 @@ function pm_post_crm(string $phone, string $name, string $message): void
         'name'            => $name,
         'message'         => $message,
         'source'          => 'prestamo-contacto',
-        'idempotency_key' => pm_uuid(),
+        // Stable per phone and hour: a double-submit or retry cannot duplicate the contact.
+        'idempotency_key' => hash('sha256', $phone . '|' . gmdate('Y-m-d-H')),
     ], JSON_UNESCAPED_UNICODE);
     if ($payload === false) {
         error_log('[prestamo-contacto] could not encode the CRM payload');
